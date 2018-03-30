@@ -1,0 +1,14 @@
+{
+	"STEPS": 10,
+
+	"X_MIN": 0,
+	"X_MAX": 100,
+	"Y_MIN": 0,
+	"Y_MAX": 100,
+
+	"V_MIN": 0,
+	"V_MAX": 10,
+
+	"PCT_NORMAL": 0.8,
+	"POP_SIZE": 100
+}
