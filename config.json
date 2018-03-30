@@ -1,5 +1,5 @@
 {
-	"STEPS": 10,
+	"STEPS": 1000,
 
 	"X_MIN": 0,
 	"X_MAX": 100,
@@ -9,6 +9,12 @@
 	"V_MIN": 0,
 	"V_MAX": 10,
 
+	"POP_SIZE": 100000,
+
 	"PCT_NORMAL": 0.8,
-	"POP_SIZE": 100
+
+	"PCT_FRPMI": 0.25,
+	"PCT_FRPSI": 0.25,
+	"PCT_FPSI": 0.25,
+	"PCT_FPMI": 0.25
 }
