@@ -11,3 +11,6 @@ def rand_y():
 
 def rand_v():
 	return randint(conf.V_MIN, conf.V_MAX)
+
+def space_string(string, spaces):
+	return '{}{}'.format(string, ' '*(spaces - len(string)))

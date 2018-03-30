@@ -10,6 +10,7 @@ class Network:
 	def step(self):
 		for car in self.cars:
 			car.step()
+		print("ATTACKING")
 		for attacker in self.attackers:
 			attacker.attack()
 
@@ -17,5 +18,8 @@ class Network:
 		for car in self.cars:
 			print(car.report())
 
-	def join_network(self, car):
-		self.cars.append(car)
+	def join_network(self, **kwargs):
+		if 'car' in kwargs:
+			self.cars.append(kwargs['car'])
+		if 'attacker' in kwargs:
+			self.attackers.append(kwargs['attacker'])

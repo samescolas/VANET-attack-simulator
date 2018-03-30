@@ -12,13 +12,17 @@ class Car:
 		return Car(rand_x(), rand_y(), rand_z(), rand_z())
 
 	# Instead of GPS positioning we will use a 2d grid
-	#	x - 'horizontal' position
-	#	y - 'vertical' position
-	#	vx - 'horizontal' velocity (negative is 'left')
-	#	vy - 'vertical' velocity (negative is 'down')
+	######################################################
+	#	x			-	'horizontal' position
+	#	y			-	'vertical' position
+	#	vx			-	'horizontal' velocity (negative is 'left')
+	#	vy			-	'vertical' velocity (negative is 'down')
+	#	car_type	-	normal, attacker, or virtual (attacker spoofed)
+	#	attack_type	-	FRMSI,FRPMI,FPSI,FPMI (see classes for more detail)
+	######################################################
+
 	def __init__(self, x, y, vx, vy, car_type='normal', attack_type=None):
 		self.id = next(self.id_generator)
-		self.status = 'normal'
 		self.position = Coord(x, y)
 		self.speed = Coord(vx, vy)
 		self.type = car_type
@@ -26,7 +30,7 @@ class Car:
 
 	def join_network(self, n):
 		self.network = n
-		n.join_network(self)
+		n.join_network(car=self)
 
 	def step(self):
 		self.position.x += self.speed.x
@@ -42,11 +46,11 @@ class Car:
 		elif -0.1 < self.speed.y < 0:
 			self.speed.y += rand_v()
 
-	def __str__(self):
-		def space_string(string, spaces):
-			return '{}{}'.format(string, ' '*(spaces - len(string)))
-			
-		return '{}{}{}'.format(space_string(str(self.position), 15), space_string(str(self.id), 10), self.status)
+	def __str__(self):	
+		return '{}{}{}{}'.format(space_string(str(self.position), 15),
+								 space_string(str(self.id), 10),
+								 space_string(self.type, 20),
+								 self.attack_type if not not self.attack_type else '')
 
 	def report(self):
 		return '{},{},{},{}'.format(self.id,

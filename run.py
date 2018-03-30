@@ -13,35 +13,30 @@ from config import Config
 
 from utils import *
 
-def rand_car():
-	return Car(rand_x(), rand_y(), rand_v(), rand_v())
+def rand_car(car_type='normal'):
+	return Car(rand_x(), rand_y(), rand_v(), rand_v(), car_type)
 
-def rand_attacker():
+def rand_attacker(network):
 	n = random()
-	c = rand_car()
-	c.type = 'attacker'
+	c = rand_car('attacker')
 
 	if n < 0.25:
-		c.attack_type = 'FRPMI'
-		attacker = FRPMI()
+		attacker = FRPMI(c, network)
 	elif n < 0.5:
-		c.attack_type = 'FRPSI'
-		attacker = FRPSI()
+		attacker = FRPSI(c, network)
 	elif n < 0.75:
-		c.attack_type = 'FPSI'
-		attacker = FPSI()
+		attacker = FPSI(c, network)
 	else:
-		c.attack_type = 'FPMI'
-		attacker = FPMI()
+		attacker = FPMI(c, network)
 	return attacker
 
 conf = Config()
 
 cars = [rand_car() for i in range(int(conf.PCT_NORMAL * conf.POP_SIZE))]
-attackers = [rand_attacker() for i in range(int(1 - conf.PCT_NORMAL * conf.POP_SIZE))]
-network = Network(cars, attackers)
+network = Network(cars, [])
+attackers = [rand_attacker(network) for i in range(int((1.0 - conf.PCT_NORMAL) * conf.POP_SIZE))]
 
-steps = conf.STEPS
+steps = conf.STEPS# - conf.STEPS
 
 while steps != 0:
 	network.step()
