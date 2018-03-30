@@ -1,25 +1,53 @@
+from config import Config
+from random import shuffle
+
+conf = Config()
+
 class Network:
-	def __init__(self, cars, attackers):
-		self.cars = cars
-		self.size = len(cars)
+	
+	# The network that contains the friendly
+	# cars and the misbehaving attacker cars
+	def __init__(self, normal_cars, attackers):
+		self.normal_cars = normal_cars
 		self.attackers = attackers
+		self.injected_points = []
+		self.occupied = {}
+		for car in normal_cars:
+			while self.position_taken(car.position):
+				car.randomize()
+			self.occupy(car.position)
 
 	def __str__(self):
-		return "\n".join([str(car) for car in self.cars])
+		return "\n".join([str(car) for car in self.normal_cars])
 
 	def step(self):
-		for car in self.cars:
+		self.occupied = {}
+		for car in self.normal_cars:
 			car.step()
-		print("ATTACKING")
 		for attacker in self.attackers:
 			attacker.attack()
 
 	def report(self):
-		for car in self.cars:
-			print(car.report())
+		reports = []
+		while len(self.injected_points) > 0:
+			car = self.injected_points.pop(0)
+			#print(car.report())
+			reports.append(car.report())
+		for attacker in self.attackers:
+			#print(attacker.car.report())
+			reports.append(attacker.car.report())
+		for car in self.normal_cars:
+			#print(car.report())
+			reports.append(car.report())
+		shuffle(reports)
+		print('\n'.join(reports))
 
-	def join_network(self, **kwargs):
-		if 'car' in kwargs:
-			self.cars.append(kwargs['car'])
-		if 'attacker' in kwargs:
-			self.attackers.append(kwargs['attacker'])
+	def inject_point(self, car):
+		self.injected_points.append(car)
+		self.occupied[car.position] = True
+
+	def occupy(self, pos):
+		self.occupied[pos] = True
+	
+	def position_taken(self, pos):
+		return pos in self.occupied

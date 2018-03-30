@@ -4,45 +4,59 @@ from car import Car
 from network import Network
 from attacker import Attacker
 
+from FPSI import FPSI
+from FPMI import FPMI
 from FRPMI import FRPMI
 from FRPSI import FRPSI
-from FPMI import FPMI
-from FPSI import FPSI
 
 from config import Config
 
 from utils import *
 
-def rand_car(car_type='normal'):
-	return Car(rand_x(), rand_y(), rand_v(), rand_v(), car_type)
+conf = Config()
 
-def rand_attacker(network):
+# create a random attacker using
+# % vals in config.json
+def random_attacker(network):
 	n = random()
-	c = rand_car('attacker')
+	c = Car.random()
 
-	if n < 0.25:
+	if n < conf.PCT_FRPMI:
 		attacker = FRPMI(c, network)
-	elif n < 0.5:
+	elif n < conf.PCT_FRPMI + conf.PCT_FRPSI:
 		attacker = FRPSI(c, network)
-	elif n < 0.75:
+	elif n < conf.PCT_FRPMI + conf.PCT_FRPSI + conf.PCT_FPSI:
 		attacker = FPSI(c, network)
 	else:
 		attacker = FPMI(c, network)
 	return attacker
 
-conf = Config()
+# generate 80% normal cars
+cars = [Car.random() for i in range(int(conf.PCT_NORMAL * conf.POP_SIZE))]
 
-cars = [rand_car() for i in range(int(conf.PCT_NORMAL * conf.POP_SIZE))]
+# create empty network
 network = Network(cars, [])
-attackers = [rand_attacker(network) for i in range(int((1.0 - conf.PCT_NORMAL) * conf.POP_SIZE))]
 
-steps = conf.STEPS# - conf.STEPS
+# generate 20% attackers distributed according to config
+attackers = [random_attacker(network) for i in range(int((1.0 - conf.PCT_NORMAL) * conf.POP_SIZE))]
+
+# add cars to network
+for c in cars:
+	c.network = network
+
+# add attackers to network
+network.attackers = attackers
+
+# define number of steps in simulation
+steps = conf.STEPS
 
 while steps != 0:
+	print('STEPS REMAINING {}'.format(steps))
+	# step propagates updates to all members of network
 	network.step()
+	# report current positions and statuses of all vehicles including
+	# attackers and virtual cars
 	network.report()
 	print()
 	print()
 	steps -= 1
-
-print('Completed')

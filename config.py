@@ -17,6 +17,10 @@ class Config:
 		self.Y_MAX = c['Y_MAX'] if 'Y_MAX' in c else 100
 		self.V_MIN = c['V_MIN'] if 'V_MIN' in c else 0
 		self.V_MAX = c['V_MAX'] if 'V_MAX' in c else 10
+		self.PCT_FRPMI = c['PCT_FRPMI'] if 'PCT_FRPMI' in c else 0.25
+		self.PCT_FRPSI = c['PCT_FRPSI'] if 'PCT_FRPSI' in c else 0.25
+		self.PCT_FPMI = c['PCT_FPMI'] if 'PCT_FPMI' in c else 0.25
+		self.PCT_FPSI = c['PCT_FPSI'] if 'PCT_FPSI' in c else 0.25
 		self.PCT_NORMAL = c['PCT_NORMAL'] if 'PCT_NORMAL' in c else 0.8
 		self.POP_SIZE = c['POP_SIZE'] if 'POP_SIZE' in c else 100
 

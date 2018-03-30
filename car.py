@@ -3,13 +3,16 @@ import itertools
 import time
 import random
 from utils import *
+from config import Config
+
+conf = Config()
 
 class Car:
 	# Incrementing id to uniquely identify car
 	id_generator = itertools.count(1)
 
 	def random():
-		return Car(rand_x(), rand_y(), rand_z(), rand_z())
+		return Car(rand_x(), rand_y(), rand_v(), rand_v())
 
 	# Instead of GPS positioning we will use a 2d grid
 	######################################################
@@ -26,25 +29,50 @@ class Car:
 		self.position = Coord(x, y)
 		self.speed = Coord(vx, vy)
 		self.type = car_type
+		self.generate_xpath()
+		self.generate_ypath()
 		self.attack_type = attack_type
+		self.network = None
 
 	def join_network(self, n):
 		self.network = n
 		n.join_network(car=self)
 
+	def randomize(self):
+		self.position.x = rand_x()
+		self.position.y = rand_y()
+		self.speed.x = rand_v()
+		self.speed.y = rand_v()
+
 	def step(self):
-		self.position.x += self.speed.x
-		self.position.y += self.speed.y
-		self.speed.x *= random.random()
-		self.speed.y *= random.random()
-		if 0 < self.speed.x < 0.1:
-			self.speed.x -= rand_v()
-		elif -0.1 < self.speed.x < 0:
-			self.speed.x += rand_v()
-		if 0 < self.speed.y < 0.1:
-			self.speed.y -= rand_v()
-		elif -0.1 < self.speed.y < 0:
-			self.speed.y += rand_v()
+		self.stepx()
+		self.stepy()
+		if self.network.position_taken(self.position):
+			self.position.x -= self.speed.x
+			self.position.y -= self.speed.y
+			self.xpath = [self.position.x] + self.xpath
+			self.ypath = [self.position.y] + self.ypath
+
+	def stepy(self):
+		if len(self.ypath) > 0:
+			self.y = self.ypath.pop(0)
+		else:
+			if int(self.speed.y) == 0:
+				self.speed = rand_v() - (conf.V_MAX / 2)
+			self.ypath = self.generate_ypath()
+	def stepx(self):
+		if len(self.xpath) > 0:
+			self.x = self.xpath.pop(0)
+		else:
+			if int(self.speed.x) == 0:
+				self.speed = rand_v() - (conf.V_MAX / 2)
+			self.xpath = self.generate_xpath()
+
+	def generate_xpath(self):
+		self.xpath = [self.position.x + (i * self.speed.x) for i in range(10)]
+
+	def generate_ypath(self):
+		self.ypath = [self.position.y + (i * self.speed.y) for i in range(10)]
 
 	def __str__(self):	
 		return '{}{}{}{}'.format(space_string(str(self.position), 15),
@@ -53,7 +81,9 @@ class Car:
 								 self.attack_type if not not self.attack_type else '')
 
 	def report(self):
-		return '{},{},{},{}'.format(self.id,
+		return '{},{},{},{},{},{}'.format(self.id,
 									str(time.time()).split('.')[0],
 									str(self.position.report()),
-									str(self.speed.report()))
+									str(self.speed.report()),
+									self.type,
+									self.attack_type)
