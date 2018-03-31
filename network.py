@@ -31,16 +31,15 @@ class Network:
 		reports = []
 		while len(self.injected_points) > 0:
 			car = self.injected_points.pop(0)
-			#print(car.report())
 			reports.append(car.report())
 		for attacker in self.attackers:
-			#print(attacker.car.report())
 			reports.append(attacker.car.report())
 		for car in self.normal_cars:
-			#print(car.report())
 			reports.append(car.report())
 		shuffle(reports)
-		print('\n'.join(reports))
+		with open( conf.DATA_FILE, 'a' ) as fd:
+			fd.write('\n'.join(reports));
+			fd.close()
 
 	def inject_point(self, car):
 		self.injected_points.append(car)
