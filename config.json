@@ -1,4 +1,5 @@
 {
+	"DATA_FILE": "data.csv",
 	"STEPS": 1000,
 
 	"X_MIN": 0,

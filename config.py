@@ -23,10 +23,4 @@ class Config:
 		self.PCT_FPSI = c['PCT_FPSI'] if 'PCT_FPSI' in c else 0.25
 		self.PCT_NORMAL = c['PCT_NORMAL'] if 'PCT_NORMAL' in c else 0.8
 		self.POP_SIZE = c['POP_SIZE'] if 'POP_SIZE' in c else 100
-
-		#print(self.X_MIN)
-		#print(self.X_MAX)
-		#print(self.Y_MIN)
-		#print(self.Y_MAX)
-		#print(self.V_MIN)
-		#print(self.V_MAX)
+		self.DATA_FILE = c['DATA_FILE'] if 'DATA_FILE' in c else 'data.csv'
