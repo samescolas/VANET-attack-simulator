@@ -48,25 +48,28 @@ class Car:
 		self.stepx()
 		self.stepy()
 		if self.network.position_taken(self.position):
+			# go back to where you came from
 			self.position.x -= self.speed.x
 			self.position.y -= self.speed.y
+			# update path to positioni self back where you were
+			# going last time. Think stop sign
 			self.xpath = [self.position.x] + self.xpath
 			self.ypath = [self.position.y] + self.ypath
 
 	def stepy(self):
-		if len(self.ypath) > 0:
-			self.y = self.ypath.pop(0)
-		else:
+		if self.ypath == None or len(self.ypath) == 0:
 			if int(self.speed.y) == 0:
-				self.speed = rand_v() - (conf.V_MAX / 2)
+				self.speed.y = rand_v() - (conf.V_MAX / 2)
 			self.ypath = self.generate_ypath()
-	def stepx(self):
-		if len(self.xpath) > 0:
-			self.x = self.xpath.pop(0)
 		else:
+			self.y = self.ypath.pop(0)
+	def stepx(self):
+		if self.xpath == None or len(self.xpath) == 0:
 			if int(self.speed.x) == 0:
-				self.speed = rand_v() - (conf.V_MAX / 2)
+				self.speed.x = rand_v() - (conf.V_MAX / 2)
 			self.xpath = self.generate_xpath()
+		else:
+			self.x = self.xpath.pop(0)
 
 	def generate_xpath(self):
 		self.xpath = [self.position.x + (i * self.speed.x) for i in range(10)]
