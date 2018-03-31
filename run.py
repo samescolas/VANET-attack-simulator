@@ -57,6 +57,4 @@ while steps != 0:
 	# report current positions and statuses of all vehicles including
 	# attackers and virtual cars
 	network.report()
-	print()
-	print()
 	steps -= 1
